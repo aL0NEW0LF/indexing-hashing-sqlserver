@@ -7,4 +7,4 @@ the project contains the following algorithms:
  - [x] Hash table separate chaining with list
  - [x] Hash table separate chaining with LinkedList
  - [ ] Hash table linear probing
- - [ ] 'Tree of hash tables'
+ - [ ] B+ tree
