@@ -1,4 +1,6 @@
-from bplustree import BPlusTree
+import numpy as np
+
+from BPlusTree import BPlusTree
 from hashTableSeparateChainingWithLinkedList import HashTable
 from hashTableSeparateChainingWithList import HashTableSC
 from hashTableDoubleHashing import HashTableDH
@@ -13,12 +15,15 @@ if __name__ == '__main__':
 
     ht.printAll()
 
-    bplustree = BPlusTree(6)
-    random_list = random.sample(range(1, 100), 20)
+    bplustree = BPlusTree()
+
+    random_list = random.sample(range(1, 100), 50)
     for i in random_list:
         bplustree[i] = 'test' + str(i)
         print('Insert ' + str(i))
         bplustree.show()
+
+    bplustree.plot_tree()
 
     random.shuffle(random_list)
     for i in random_list:

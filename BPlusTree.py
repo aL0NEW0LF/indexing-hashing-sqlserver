@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import networkx as nx
-
+import numpy as np
+import graphviz
 
 splits = 0
 parent_splits = 0
@@ -344,3 +345,80 @@ class BPlusTree(object):
         while type(node) is not Leaf:
             node = node.values[0]
         return node
+
+    def plot_tree(self, filename='./bplus_tree'):
+        dot = graphviz.Digraph(comment='B+ Tree')
+        self._plot_tree(dot, self.root)
+        dot.render(filename, format='png', cleanup=True, view=True)
+
+    def _plot_tree(self, dot, node, parent_label=None, link_label=None):
+        if node is None:
+            return
+
+        if isinstance(node, Node):
+            node_label = ', '.join(map(str, node.keys))
+        elif isinstance(node, Leaf):
+            node_label = ', '.join(map(str, node.keys))
+        else:
+            # Handle other types of nodes if necessary
+            node_label = str(node)
+
+        dot.node(str(id(node)), label=node_label)
+
+        if parent_label is not None:
+            dot.edge(str(parent_label), str(id(node)), label=link_label)
+
+        if isinstance(node, Node):
+            for i, child in enumerate(node.values):
+                link_label = f'[{i}]'
+                self._plot_tree(dot, child, parent_label=id(node), link_label=link_label)
+        elif isinstance(node, Leaf):
+            if node.next:
+                link_label = 'next'
+                self._plot_tree(dot, node.next, parent_label=id(node), link_label=link_label)
+
+        return dot
+    # def plot(self):
+    #
+    #     # Track node positions
+    #     pos = {}
+    #
+    #     def set_pos(node, x, y):
+    #         pos[node] = (x, y)
+    #
+    #     def get_pos(node):
+    #         return pos.get(node, (0, 0))
+    #
+    #     # Plot self recursively
+    #     def plot_node(node, x, y, angle_offset=np.pi/4):
+    #
+    #         set_pos(node, x, y)
+    #
+    #         if isinstance(node, Leaf):
+    #             # Plot leaf node
+    #             plt.Circle([x, y], 0.5, color='green')
+    #             plt.text(x, y, str(node.keys))
+    #
+    #         else:
+    #             # Plot internal node
+    #             plt.Circle([x, y], 0.5, color='black')
+    #             plt.text(x, y, str(node.keys))
+    #
+    #             # Plot lines to children
+    #             x_increment = 1 / (len(node.keys) + 1)
+    #
+    #             num_children = len(node.values)
+    #
+    #             for i, child in enumerate(node.values):
+    #                 angle_rad = (i / num_children) * (2 * np.pi) + angle_offset
+    #                 child_x = x + x_increment * (i + 1) * np.cos(angle_rad)
+    #                 child_y = y - 1 + x_increment * (i + 1) * np.sin(angle_rad)
+    #
+    #                 plt.plot([x, child_x], [y, child_y], color='black')
+    #                 plot_node(child, child_x, child_y, angle_offset)
+    #
+    #     fig, ax = plt.subplots(figsize=(20, 20))
+    #     plot_node(self.root, 0, 0)
+    #     ax.margins(0.1)
+    #     plt.axis('off')
+    #     plt.show()
